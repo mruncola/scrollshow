@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Scrollshow Demo</title>
+<style>
+	body { margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; font-size: 17px; }
+	.contentblock { height: 250px; background-color: red; color: #fff; }
+	.contentblock:nth-child(2n) { background-color: blue; color: #fff; }
+</style>
+</head>
+
+<body>
+
+	<div class="scrollshow" data-bind="foreach:visibleContentBlocks">
+    	<div class="contentblock" data-bind="text: title"></div>
+    </div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+    <script src="knockout.js" type="text/javascript"></script>
+    <script src="scrollshow.js" type="text/javascript"></script>
+    
+    <script>
+	var d;
+    	$(document).ready(function(e) {
+            _model.maxVisibleItems(10);
+			_model.visibleItems(1);
+			scrollShowSetup();
+        });
+		
+		function scrollShowSetup(){
+			
+			d = $(".scrollshow .contentblock:last-child").scrollshow( { 
+				callback : loadNextContentElement
+			} );
+				
+		}
+		
+		function loadNextContentElement(){
+			if(_model.maxVisibleItems() > _model.visibleItems() ){
+				_model.addVisibleContentBlock();
+				scrollShowSetup();
+			}
+		}
+		
+		
+		// This is a simple *viewmodel* - JavaScript that defines the data and behavior of your UI
+		function ContentBlock(title){
+			var self = this;
+			self.title = ko.observable(title);
+		}
+		function model() {
+			var self = this;
+			self.contentblocks = ko.observableArray([]);
+			self.maxVisibleItems = ko.observable(1);
+			self.visibleItems = ko.observable(0);
+			self.addVisibleContentBlock = function(){
+				self.visibleItems( (self.visibleItems() + 1) );
+			}
+			self.addContentBlock = function(title){
+				self.contentblocks.push( new ContentBlock(title) );
+			}
+			
+			self.visibleContentBlocks = ko.dependentObservable(function() {
+				//var maxVisibleItems = self.maxVisibleItems();
+				//var visibleItems = self.visibleItems();
+				console.log(self.visibleItems(), self.maxVisibleItems() > self.visibleItems());
+				return self.contentblocks.slice(0, (self.maxVisibleItems() > self.visibleItems() ) ? self.visibleItems() : self.maxVisibleItems() );
+			}, self.visibleItems);
+		}
+		
+		// Activates knockout.js
+		var _model = new model();
+		ko.applyBindings( _model );
+		_model.addContentBlock("1");
+		_model.addContentBlock("2");
+		_model.addContentBlock("3");
+		_model.addContentBlock("4");
+		_model.addContentBlock("5");
+		_model.addContentBlock("6");
+		_model.addContentBlock("7");
+		_model.addContentBlock("8");
+		_model.addContentBlock("9");
+		_model.addContentBlock("10");
+		
+		
+		
+    </script>
+
+</body>
+</html>

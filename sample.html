@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Scrollshow Demo</title>
+<style>
+	body { margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; font-size: 13px; }
+	.contentblock { height: 250px; background-color: red; }
+	.contentblock:nth-child(2n) { background-color: blue; }
+</style>
+</head>
+
+<body>
+
+	<div class="scrollshow">
+    	<div class="contentblock">A content block</div>
+    	<div class="contentblock">A content block</div>
+    	<div class="contentblock">A content block</div>
+    </div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+    <script src="scrollshow.js" type="text/javascript"></script>
+    
+    <script>
+	var d;
+    	$(document).ready(function(e) {
+            
+			
+			scrollShowSetup();
+			
+			
+        });
+		
+		function scrollShowSetup(){
+			/* SCROLLSHOW DEMO */
+			d = $(".scrollshow .contentblock:last-child").scrollshow( { 
+				callback : loadNextContentElement
+			} );	
+		}
+		
+		
+		var _max = 10;
+		function loadNextContentElement(){
+			if( $(".scrollshow .contentblock").length < _max ){
+				$(".scrollshow").append('<div class="contentblock">A content block</div>');
+				scrollShowSetup();
+			}
+		}
+    </script>
+
+</body>
+</html>
